@@ -1,3 +1,4 @@
+// This script gives the player and the agent fun powers and abilities.
 const PI: number = 3.141592653589793
 const GRAVITY: number = 0.1
 const THROW_ITERATIONS: number = 50
