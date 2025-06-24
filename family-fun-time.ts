@@ -8,9 +8,7 @@ const THROW_VERTICAL_ADJUST: number = 0.5
 function getDirection(): number[] {
     let pos: Position = player.position().toWorld()
     let loc: Position = posLocal(0, 0, DIRECTION_DISTANCE).toWorld()
-    return [Axis.X, Axis.Y, Axis.Z].map(function (axis: Axis) {
-        return (loc.getValue(axis) - pos.getValue(axis)) / DIRECTION_DISTANCE
-    })
+    return [Axis.X, Axis.Y, Axis.Z].map((axis: Axis) => (loc.getValue(axis) - pos.getValue(axis)) / DIRECTION_DISTANCE)
 }
 // Simulates a throw from a position in a direction vector leaving a particle trail
 function simulateThrow(pos: Position, da: number[], particle: Particle): Position {
@@ -84,16 +82,16 @@ player.onItemInteracted(Item.DragonSBreath, () => loops.runInBackground(function
 player.onItemInteracted(Item.Fireball, () => loops.runInBackground(function () {
     let pos: Position = playerThrow(Particle.FireVapor)
     mobs.spawnParticle(Particle.ExplosionCauldron, positions.add(pos, world(0, 2, 0)))
-    let pos1: Position = positions.add(pos, world(-2, -1, -2))
-    let pos2: Position = positions.add(pos, world(2, 3, 2))
-    blocks.replace(Block.Fire, Block.Air, pos1, pos2)
+    let corner1: Position = positions.add(pos, world(-2, -1, -2))
+    let corner2: Position = positions.add(pos, world(2, 3, 2))
+    blocks.replace(Block.Fire, Block.Air, corner1, corner2)
     loops.pause(10000)
-    blocks.replace(Block.Air, Block.Fire, pos1, pos2)
+    blocks.replace(Block.Air, Block.Fire, corner1, corner2)
 }))
 // Teleport forward until the path is blocked to if reached 20 blocks
 player.onItemInteracted(Item.EchoShard, function () {
     let pos: Position = player.position()
-    let orientation = (player.getOrientation() + 360) % 360 * PI / 180;
+    let orientation: number = (player.getOrientation() + 360) % 360 * PI / 180;
     let dx: number = -Math.sin(orientation)
     let dz: number = Math.cos(orientation)
     for (let i = 0; i <= 20; i++) {
@@ -133,8 +131,8 @@ player.onItemInteracted(Item.Sugar, function () {
 })
 // Strike the area around the agent with lightning
 player.onItemInteracted(Block.LightningRod, function () {
-    const pos: Position = agent.getPosition()
     const rad: number = 3
+    let pos: Position = agent.getPosition()
     for (let i = 0; i < 4; i++) {
         let x: number = rad * (i < 2 ? -1 : 1)
         let z: number = rad * (i % 2 === 1 ? -1 : 1)
