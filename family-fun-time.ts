@@ -79,6 +79,17 @@ player.onItemInteracted(Item.DragonSBreath, () => loops.runInBackground(function
         mobs.spawnParticle(Particle.ElephantToothPasteVapor, smokePos)
     }, 15000)
 }))
+// Throw a thumper grenade that deals 3 pulses of damage to mobs inside
+player.onItemInteracted(Item.Redstone, () => loops.runInBackground(function () {
+    let pos: Position = playerThrow(Particle.SmokeBasic)
+    let selector: TargetSelector = mobs.near(mobs.target(TargetSelectorKind.AllEntities), pos, 5)
+    loops.pause(300)
+    for (let i = 0; i < 3; i++) {
+        mobs.spawnParticle(Particle.ExplosionHugeLab, pos)
+        player.execute(`damage ${selector.toString()} 5`)
+        loops.pause(50)
+    }
+}))
 // Throw a molotov cocktail that sets an area on fire for 10 seconds
 player.onItemInteracted(Item.Fireball, () => loops.runInBackground(function () {
     let pos: Position = playerThrow(Particle.FireVapor)
