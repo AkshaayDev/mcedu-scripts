@@ -83,11 +83,11 @@ player.onItemInteracted(Item.DragonSBreath, () => loops.runInBackground(function
 player.onItemInteracted(Item.Redstone, () => loops.runInBackground(function () {
     let pos: Position = playerThrow(Particle.SmokeBasic)
     let selector: TargetSelector = mobs.near(mobs.target(TargetSelectorKind.AllEntities), pos, 5)
-    loops.pause(300)
+    loops.pause(500)
     for (let i = 0; i < 3; i++) {
         mobs.spawnParticle(Particle.ExplosionHugeLab, pos)
         player.execute(`damage ${selector.toString()} 5`)
-        loops.pause(50)
+        loops.pause(700)
     }
 }))
 // Throw a molotov cocktail that sets an area on fire for 10 seconds
