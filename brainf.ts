@@ -8,7 +8,7 @@ The agent moves forwards, executing brainf**k commands according to the block be
 * Red Wool        : - (decrement cell)
 * Black Wool      : . (output cell)
 * White Wool      : , (assign cell to input)
-* Yello Wool      : [ (start loop)
+* Yellow Wool     : [ (start loop)
 * Light Blue Wool : ] (end loop)
 * Pink Wool       : n (newline -> agent moves to the next line)
 * Magenta Wool    : e (end the program)
@@ -29,9 +29,10 @@ Printing color codes:
 * §l§2(Bold, Dark Green): Debug
 
 Usage:
-Place the agent at the start of the program facing the rest of the line and type `run` in game chat
-Example:
-(A→)+++++>[+++++++++++++<-]n
+Place the agent at the start of the program facing the rest of the line and type `run` in game chat.
+Example (from top-down view where → is the direction the agent is facing):
+
+→+++++>[+++++++++++++<-]n
 >.e
 
 */
@@ -76,13 +77,13 @@ player.onChat("iotoggle", function() {
 })
 
 // Toggle debug mode (print pointer and cell values after each executed instruction)
-player.onChat("debugtoggle", function () {
+player.onChat("debugtoggle", function() {
     debugMode = !debugMode
     player.say(`§l§2Debug mode: ${debugMode}`)
 })
 
 // Reset memory
-player.onChat("reset", function () {
+player.onChat("reset", function() {
     tape = tape.map(() => 0)
     ptr = 0
     loopStack = []
