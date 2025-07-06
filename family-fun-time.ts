@@ -43,6 +43,7 @@ function repeatFor(f: Function, duration: number, interval: number = 0): void {
         loops.pause(interval)
     }
 }
+// Plays a dound without blocking code execution
 function asyncPlaySound(sound: Sound): void {
     loops.runInBackground(() => music.playSound(sound))
 }
