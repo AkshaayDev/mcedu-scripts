@@ -25,6 +25,7 @@ function simulateThrow(pos: Position, da: number[], particle: Particle): Positio
 }
 // Simulates a player throw
 function playerThrow(particle: Particle): Position {
+    asyncPlaySound(Sound.Fizz)
     let p: Position = pos(0, 1, 0)
     let da: number[] = getDirection()
     da[1] += THROW_VERTICAL_ADJUST
@@ -42,13 +43,18 @@ function repeatFor(f: Function, duration: number, interval: number = 0): void {
         loops.pause(interval)
     }
 }
+function asyncPlaySound(sound: Sound): void {
+    loops.runInBackground(() => music.playSound(sound))
+}
 
 // Teleports the agent to you
 player.onItemInteracted(Item.IronDoor, function () {
+    asyncPlaySound(Sound.Trident)
     agent.teleport(pos(0, 0, 0), positions.toCompassDirection(player.getOrientation()))
 })
 // Teleports you to the agent
 player.onItemInteracted(Item.OakDoor, function () {
+    asyncPlaySound(Sound.Trident)
     player.teleport(agent.getPosition())
 })
 // Agent disappears with an explosion particle
@@ -58,12 +64,14 @@ player.onItemInteracted(Block.SkeletonSkull, function () {
 })
 // Prime a TNT at the agent's location
 player.onItemInteracted(Item.Gunpowder, function () {
+    asyncPlaySound(Sound.Fuse)
     mobs.spawn(ProjectileMob.PrimedTnt, agent.getPosition())
 })
 // Throw a smoke grenade that hides mobs inside
 player.onItemInteracted(Item.Charcoal, () => loops.runInBackground(function () {
     let pos: Position = playerThrow(Particle.SmokeCampfire)
     repeatFor(function () {
+        asyncPlaySound(Sound.Fizz)
         let selector: TargetSelector = mobs.near(mobs.target(TargetSelectorKind.AllEntities), pos, 5)
         player.execute(`effect ${selector.toString()} invisibility 2 1 true`)
         mobs.spawnParticle(Particle.ExplosionHuge, pos)
@@ -73,6 +81,7 @@ player.onItemInteracted(Item.Charcoal, () => loops.runInBackground(function () {
 player.onItemInteracted(Item.DragonSBreath, () => loops.runInBackground(function () {
     let pos: Position = playerThrow(Particle.SmokeLlamaSpit)
     repeatFor(function () {
+        asyncPlaySound(Sound.FireworkTwinkle)
         let selector: TargetSelector = mobs.near(mobs.target(TargetSelectorKind.AllEntities), pos, 5)
         mobs.applyEffect(Effect.Poison, selector, 2, 100)
         let smokePos: Position = randpos(positions.add(pos, world(-3, 0, -3)), positions.add(pos, world(3, 3, 3)))
@@ -86,6 +95,8 @@ player.onItemInteracted(Item.Redstone, () => loops.runInBackground(function () {
     loops.pause(500)
     for (let i = 0; i < 3; i++) {
         mobs.spawnParticle(Particle.ExplosionHugeLab, pos)
+        asyncPlaySound(Sound.PlayerHurt)
+        asyncPlaySound(Sound.Firework)
         player.execute(`damage ${selector.toString()} 5`)
         loops.pause(700)
     }
@@ -102,6 +113,7 @@ player.onItemInteracted(Item.Fireball, () => loops.runInBackground(function () {
 }))
 // Teleport forward until the path is blocked to if reached 20 blocks
 player.onItemInteracted(Item.EchoShard, function () {
+    asyncPlaySound(Sound.ElderGuardian)
     let pos: Position = player.position()
     let orientation: number = (player.getOrientation() + 360) % 360 * PI / 180;
     let dx: number = -Math.sin(orientation)
@@ -123,10 +135,12 @@ player.onItemInteracted(Item.EchoShard, function () {
 })
 // Teleport the player 20 blocks up
 player.onItemInteracted(Item.Feather, function () {
+    asyncPlaySound(Sound.Click)
     player.teleport(pos(0, 20, 0))
 })
 // Gives player powers
 player.onItemInteracted(Item.Sugar, function () {
+    asyncPlaySound(Sound.LevelUp)
     const duration: number = 10
     const effects: [Effect, number][] = [
         [Effect.Speed, 20],
@@ -141,7 +155,7 @@ player.onItemInteracted(Item.Sugar, function () {
         mobs.applyEffect(effectType, self, duration, amplifier)
     })
 })
-// Strike the area around the agent with lightning
+// Call an orbital strike to strike the area around the agent with lightning
 player.onItemInteracted(Block.LightningRod, function () {
     const rad: number = 3
     let pos: Position = agent.getPosition()
