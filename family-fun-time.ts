@@ -124,6 +124,7 @@ player.onItemInteracted(Item.Redstone, () => loops.runInBackground(function () {
 // Throw a molotov cocktail that sets an area on fire for 10 seconds
 player.onItemInteracted(Item.Fireball, () => loops.runInBackground(function () {
     let pos: Position = playerThrow(Particle.FireVapor)
+    asyncPlaySound(Sound.FireworkLarge)
     mobs.spawnParticle(Particle.ExplosionCauldron, positions.add(pos, world(0, 2, 0)))
     let corner1: Position = positions.add(pos, world(-2, -1, -2))
     let corner2: Position = positions.add(pos, world(2, 3, 2))
