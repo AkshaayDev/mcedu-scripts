@@ -3,18 +3,19 @@
 This script gives the player and the agent fun powers and abilities.
 These abilities include powers, teleportation, grenades and weapons.
 To use these abilities, equip respective item and interact:
-* Iron Door       : Teleport agent to player
-* Oak Door        : Teleport player to agent
-* Skeleton Skull  : Agent disappears with an explosion particle
-* Gunpowder       : Prime a TNT at the agent's location
-* Charcoal        : Throw smoke grenade
-* Dragon's Breath : Throw poison grenade
-* Redstone        : Throw thumper grenade
-* Fire Charge     : Throw molotov cocktail
-* Echo Shard      : Teleport forward until obstacle (max 20 blocks)
-* Feather         : Teleport up 20 blocks
-* Sugar           : Temporary superpowers
-* Lightning Rod   : Orbital strike
+* Iron Door        : Teleport agent to player
+* Oak Door         : Teleport player to agent
+* Skeleton Skull   : Agent disappears with an explosion particle
+* Gunpowder        : Prime a TNT at the agent's location
+* Charcoal         : Throw smoke grenade
+* Dragon's Breath  : Throw poison grenade
+* Redstone         : Throw thumper grenade
+* Prismarine Shard : Throw concussion grenade
+* Fire Charge      : Throw molotov cocktail
+* Echo Shard       : Teleport forward until obstacle (max 20 blocks)
+* Feather          : Teleport up 20 blocks
+* Sugar            : Temporary superpowers
+* Lightning Rod    : Orbital strike
 
 */
 const PI: number = 3.141592653589793
@@ -120,6 +121,20 @@ player.onItemInteracted(Item.Redstone, () => loops.runInBackground(function () {
         player.execute(`damage ${selector.toString()} 5`)
         loops.pause(700)
     }
+}))
+// Throw a concussion grenade that blinds, disorients and slows mobs inside
+player.onItemInteracted(Item.PrismarineShard, () => loops.runInBackground(function () {
+    let pos: Position = playerThrow(Particle.SmokeBasic)
+    let selector: TargetSelector = mobs.near(mobs.target(TargetSelectorKind.AllEntities), pos, 5)
+    asyncPlaySound(Sound.Dolphin)
+    loops.pause(1000)
+    mobs.spawnParticle(Particle.ExplosionHugeLab, pos)
+    asyncPlaySound(Sound.Firework)
+    loops.runInBackground(() => music.playNote(Note.FSharp5, Instrument.Flute, 1))
+    let effects: Effect[] = [Effect.Blindness, Effect.Nausea, Effect.Slowness]
+    effects.forEach((effect: Effect) => {
+        mobs.applyEffect(effect, selector, 10)
+    })
 }))
 // Throw a molotov cocktail that sets an area on fire for 10 seconds
 player.onItemInteracted(Item.Fireball, () => loops.runInBackground(function () {
